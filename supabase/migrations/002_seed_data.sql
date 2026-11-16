@@ -1,0 +1,2 @@
+-- Seed data is intentionally excluded from migrations.
+-- Development-only sample records are in supabase/seeds/development_seed.sql.
