@@ -1283,100 +1283,75 @@ export async function updateDeliveryReturnKM(
     )
   }
 
+  if (!deliveryId?.trim()) {
+    throw new Error('Delivery ID is missing. Refresh the page and try again.')
+  }
+
   if (!Number.isFinite(inKm) || inKm < 0) {
     throw new Error('Please enter a valid, non-negative Vehicle IN KM reading.')
   }
 
   const supabase = getSupabase()
 
-  // Read the authoritative database row first; localStorage can be stale or
-  // belong to a different browser/device.
-  let deliveryResult = await supabase
-    .from('outward_deliveries')
-    .select('*')
-    .eq('id', deliveryId)
-    .maybeSingle()
+  // Use the secured database function rather than a direct table UPDATE.
+  // Direct updates are blocked by the current outward_deliveries RLS policies.
+  // The RPC must be created in Supabase SQL Editor before this frontend change
+  // can save returns successfully.
+  const { data, error } = await (supabase as any).rpc('record_vehicle_return', {
+    p_delivery_id: deliveryId,
+    p_vehicle_in_km: inKm,
+    p_return_notes: returnNotes !== undefined ? (returnNotes.trim() || null) : null
+  })
 
-  if (deliveryResult.error) {
-    throw new Error(`Unable to load delivery before saving return KM: ${deliveryResult.error.message}`)
+  if (error) {
+    throw new Error(`Vehicle return was not saved to the shared database: ${error.message}`)
   }
 
-  if (!deliveryResult.data) {
-    deliveryResult = await supabase
-      .from('outward_deliveries')
-      .select('*')
-      .eq('delivery_ref', deliveryId)
-      .maybeSingle()
-
-    if (deliveryResult.error) {
-      throw new Error(`Unable to find delivery before saving return KM: ${deliveryResult.error.message}`)
-    }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('Supabase did not return the updated delivery record. Please refresh and try again.')
   }
 
-  const deliveryRow = deliveryResult.data
-  if (!deliveryRow) {
-    throw new Error('Delivery record not found in the shared database. Refresh the page and try again.')
+  const updatedRow = data as Record<string, any>
+
+  if (
+    !updatedRow.id ||
+    updatedRow.vehicle_in_km == null ||
+    Number(updatedRow.vehicle_in_km) !== inKm ||
+    updatedRow.status !== 'completed'
+  ) {
+    throw new Error(
+      'The database did not confirm the Vehicle IN KM and completed status. Please refresh and verify before retrying.'
+    )
   }
 
-  const outKm = Number(deliveryRow.vehicle_out_km)
-  if (!Number.isFinite(outKm) || outKm < 0) {
-    throw new Error('The saved Vehicle OUT KM is invalid. Correct the dispatch record before recording return KM.')
-  }
-  if (inKm < outKm) {
-    throw new Error(`Vehicle In KM (${inKm}) cannot be less than Vehicle Out KM (${outKm}).`)
-  }
-  if (deliveryRow.status === 'draft') {
-    throw new Error('A draft delivery cannot be marked returned. Submit the delivery first.')
-  }
+  const existingList = getStore<OutwardDelivery[]>('deliveries', EMPTY_DELIVERIES)
+  const cachedDelivery = existingList.find(
+    d => d.id === updatedRow.id || d.delivery_ref === updatedRow.delivery_ref
+  )
 
-  const now = new Date().toISOString()
-  const distance = inKm - outKm
-  const updatePayload = {
-    vehicle_in_km: inKm,
-    distance_travelled: distance,
-    return_timestamp: now,
-    return_notes: returnNotes !== undefined ? (returnNotes.trim() || null) : (deliveryRow.return_notes ?? null),
-    return_updated_by: actor?.full_name || 'Godown Staff',
-    status: 'completed',
-    updated_at: now
-  }
+  const outKm = Number(updatedRow.vehicle_out_km) || 0
+  const distance = updatedRow.distance_travelled == null
+    ? inKm - outKm
+    : Number(updatedRow.distance_travelled)
 
-  const updateResult = await supabase
-    .from('outward_deliveries')
-    .update(updatePayload)
-    .eq('id', deliveryRow.id)
-    .select('*')
-    .single()
-
-  if (updateResult.error) {
-    throw new Error(`Vehicle return was not saved to the shared database: ${updateResult.error.message}`)
-  }
-
-  if (!updateResult.data || updateResult.data.vehicle_in_km == null ||
-      Number(updateResult.data.vehicle_in_km) !== inKm ||
-      updateResult.data.status !== 'completed') {
-    throw new Error('The database did not confirm the Vehicle IN KM and completed status. Please refresh and verify before retrying.')
-  }
-
-  const updatedRow = updateResult.data
   const updated: OutwardDelivery = {
-    ...(deliveryRow as OutwardDelivery),
+    ...(cachedDelivery ?? {}),
     ...updatedRow,
-    date: updatedRow.delivery_date ?? (deliveryRow as any).date,
+    date: updatedRow.delivery_date ?? cachedDelivery?.date,
     dispatch_timestamp: updatedRow.dispatch_timestamp ?? updatedRow.created_at,
-    vehicle_out_km: Number(updatedRow.vehicle_out_km) || 0,
-    vehicle_in_km: updatedRow.vehicle_in_km == null ? null : Number(updatedRow.vehicle_in_km),
-    distance_travelled: updatedRow.distance_travelled == null ? null : Number(updatedRow.distance_travelled),
-    items: (getStore<OutwardDelivery[]>('deliveries', EMPTY_DELIVERIES)
-      .find(d => d.id === updatedRow.id)?.items ?? [])
+    vehicle_out_km: outKm,
+    vehicle_in_km: Number(updatedRow.vehicle_in_km),
+    distance_travelled: distance,
+    items: cachedDelivery?.items ?? []
   } as OutwardDelivery
 
-  // Refresh the browser cache only after the database confirms the update.
-  const list = getStore<OutwardDelivery[]>('deliveries', EMPTY_DELIVERIES)
-  const idx = list.findIndex(d => d.id === updated.id || d.delivery_ref === updated.delivery_ref)
-  if (idx >= 0) list[idx] = { ...list[idx], ...updated }
-  else list.unshift(updated)
-  setStore('deliveries', list)
+  // Update local cache only after Supabase confirms the successful write.
+  const idx = existingList.findIndex(
+    d => d.id === updated.id || d.delivery_ref === updated.delivery_ref
+  )
+  if (idx >= 0) existingList[idx] = { ...existingList[idx], ...updated }
+  else existingList.unshift(updated)
+  setStore('deliveries', existingList)
 
   logAudit({
     actor_id: actor?.id || 'usr-3',
@@ -1391,6 +1366,7 @@ export async function updateDeliveryReturnKM(
 
   return updated
 }
+
 
 /**
  * Reload outward deliveries from the shared database and update the local
