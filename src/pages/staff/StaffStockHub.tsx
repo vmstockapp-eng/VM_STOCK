@@ -73,12 +73,12 @@ export default function StaffStockHub() {
     setReturnNotes(delivery.return_notes || '')
   }
 
-  const handleSaveReturnKm = (e: React.FormEvent) => {
+  const handleSaveReturnKm = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!returnModalDelivery) return
 
     const numInKm = Number(returnInKm)
-    if (!numInKm || isNaN(numInKm)) {
+    if (returnInKm.trim() === '' || !Number.isFinite(numInKm) || numInKm < 0) {
       toast('error', 'Invalid Reading', 'Please enter a valid numeric Vehicle In KM.')
       return
     }
@@ -94,7 +94,7 @@ export default function StaffStockHub() {
 
     setIsSavingReturn(true)
     try {
-      const updated = updateDeliveryReturnKM(
+      const updated = await updateDeliveryReturnKM(
         returnModalDelivery.id,
         numInKm,
         returnNotes.trim() || undefined,

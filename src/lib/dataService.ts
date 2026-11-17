@@ -1271,47 +1271,111 @@ export function saveOutwardDelivery(
   return newDelivery
 }
 
-export function updateDeliveryReturnKM(
+export async function updateDeliveryReturnKM(
   deliveryId: string,
   inKm: number,
   returnNotes?: string,
   actor?: Profile
-): OutwardDelivery {
+): Promise<OutwardDelivery> {
   if (actor && (actor.role === 'admin' || actor.role === 'manager')) {
     throw new Error(
       'Vehicle IN KM must not be entered or edited by Admin or Manager. Only Godown Staff can record return odometer readings upon vehicle return.'
     )
   }
 
-  const list = getStore<OutwardDelivery[]>('deliveries', EMPTY_DELIVERIES)
-  const idx = list.findIndex(d => d.id === deliveryId || d.delivery_ref === deliveryId)
-  if (idx === -1) {
-    throw new Error('Delivery record not found.')
+  if (!Number.isFinite(inKm) || inKm < 0) {
+    throw new Error('Please enter a valid, non-negative Vehicle IN KM reading.')
   }
 
-  const delivery = list[idx]
+  const supabase = getSupabase()
 
-  // Validate In KM >= Out KM
-  if (inKm < delivery.vehicle_out_km) {
-    throw new Error(
-      `Vehicle In KM (${inKm}) cannot be less than Vehicle Out KM (${delivery.vehicle_out_km}).`
-    )
+  // Read the authoritative database row first; localStorage can be stale or
+  // belong to a different browser/device.
+  let deliveryResult = await supabase
+    .from('outward_deliveries')
+    .select('*')
+    .eq('id', deliveryId)
+    .maybeSingle()
+
+  if (deliveryResult.error) {
+    throw new Error(`Unable to load delivery before saving return KM: ${deliveryResult.error.message}`)
   }
 
-  const distance = inKm - delivery.vehicle_out_km
+  if (!deliveryResult.data) {
+    deliveryResult = await supabase
+      .from('outward_deliveries')
+      .select('*')
+      .eq('delivery_ref', deliveryId)
+      .maybeSingle()
 
-  const updated: OutwardDelivery = {
-    ...delivery,
+    if (deliveryResult.error) {
+      throw new Error(`Unable to find delivery before saving return KM: ${deliveryResult.error.message}`)
+    }
+  }
+
+  const deliveryRow = deliveryResult.data
+  if (!deliveryRow) {
+    throw new Error('Delivery record not found in the shared database. Refresh the page and try again.')
+  }
+
+  const outKm = Number(deliveryRow.vehicle_out_km)
+  if (!Number.isFinite(outKm) || outKm < 0) {
+    throw new Error('The saved Vehicle OUT KM is invalid. Correct the dispatch record before recording return KM.')
+  }
+  if (inKm < outKm) {
+    throw new Error(`Vehicle In KM (${inKm}) cannot be less than Vehicle Out KM (${outKm}).`)
+  }
+  if (deliveryRow.status === 'draft') {
+    throw new Error('A draft delivery cannot be marked returned. Submit the delivery first.')
+  }
+
+  const now = new Date().toISOString()
+  const distance = inKm - outKm
+  const updatePayload = {
     vehicle_in_km: inKm,
     distance_travelled: distance,
-    return_timestamp: new Date().toISOString(),
-    return_notes: returnNotes !== undefined ? (returnNotes || null) : delivery.return_notes,
-    return_updated_by: actor?.full_name || delivery.return_updated_by || 'Godown Staff',
+    return_timestamp: now,
+    return_notes: returnNotes !== undefined ? (returnNotes.trim() || null) : (deliveryRow.return_notes ?? null),
+    return_updated_by: actor?.full_name || 'Godown Staff',
     status: 'completed',
-    updated_at: new Date().toISOString()
+    updated_at: now
   }
 
-  list[idx] = updated
+  const updateResult = await supabase
+    .from('outward_deliveries')
+    .update(updatePayload)
+    .eq('id', deliveryRow.id)
+    .select('*')
+    .single()
+
+  if (updateResult.error) {
+    throw new Error(`Vehicle return was not saved to the shared database: ${updateResult.error.message}`)
+  }
+
+  if (!updateResult.data || updateResult.data.vehicle_in_km == null ||
+      Number(updateResult.data.vehicle_in_km) !== inKm ||
+      updateResult.data.status !== 'completed') {
+    throw new Error('The database did not confirm the Vehicle IN KM and completed status. Please refresh and verify before retrying.')
+  }
+
+  const updatedRow = updateResult.data
+  const updated: OutwardDelivery = {
+    ...(deliveryRow as OutwardDelivery),
+    ...updatedRow,
+    date: updatedRow.delivery_date ?? (deliveryRow as any).date,
+    dispatch_timestamp: updatedRow.dispatch_timestamp ?? updatedRow.created_at,
+    vehicle_out_km: Number(updatedRow.vehicle_out_km) || 0,
+    vehicle_in_km: updatedRow.vehicle_in_km == null ? null : Number(updatedRow.vehicle_in_km),
+    distance_travelled: updatedRow.distance_travelled == null ? null : Number(updatedRow.distance_travelled),
+    items: (getStore<OutwardDelivery[]>('deliveries', EMPTY_DELIVERIES)
+      .find(d => d.id === updatedRow.id)?.items ?? [])
+  } as OutwardDelivery
+
+  // Refresh the browser cache only after the database confirms the update.
+  const list = getStore<OutwardDelivery[]>('deliveries', EMPTY_DELIVERIES)
+  const idx = list.findIndex(d => d.id === updated.id || d.delivery_ref === updated.delivery_ref)
+  if (idx >= 0) list[idx] = { ...list[idx], ...updated }
+  else list.unshift(updated)
   setStore('deliveries', list)
 
   logAudit({
@@ -1326,6 +1390,36 @@ export function updateDeliveryReturnKM(
   })
 
   return updated
+}
+
+/**
+ * Reload outward deliveries from the shared database and update the local
+ * compatibility cache used by synchronous screens.
+ */
+export async function refreshDeliveriesFromSupabase(): Promise<void> {
+  const supabase = getSupabase()
+  const { data, error } = await supabase
+    .from('outward_deliveries')
+    .select('*, items:delivery_items(*)')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw new Error(`Unable to refresh deliveries from the shared database: ${error.message}`)
+  }
+
+  setStore('deliveries', (data ?? []).map((row: any) => ({
+    ...row,
+    date: row.delivery_date ?? row.date,
+    dispatch_timestamp: row.dispatch_timestamp ?? row.created_at,
+    vehicle_out_km: Number(row.vehicle_out_km) || 0,
+    vehicle_in_km: row.vehicle_in_km == null ? null : Number(row.vehicle_in_km),
+    distance_travelled: row.distance_travelled == null ? null : Number(row.distance_travelled),
+    items: (row.items ?? []).map((item: any) => ({
+      ...item,
+      delivery_id: row.id,
+      quantity: Number(item.quantity) || 0
+    }))
+  })))
 }
 
 // ==================== INWARD STOCK ENTRIES REPOSITORY ====================

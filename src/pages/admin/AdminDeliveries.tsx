@@ -8,7 +8,7 @@ import { AdminLayout } from '../../components/shared/AdminLayout'
 import { useAuth } from '../../store/AuthContext'
 import { useToast } from '../../store/ToastContext'
 import {
-  getDeliveries, updateDeliveryReturnKM, getWarehouses
+  getDeliveries, getWarehouses, refreshDeliveriesFromSupabase
 } from '../../lib/dataService'
 import type { OutwardDelivery, DeliveryStatus } from '../../types'
 import { formatDate, formatNumber } from '../../lib/utils'
@@ -29,13 +29,42 @@ export default function AdminDeliveries() {
   const [selectedDelivery, setSelectedDelivery] = useState<OutwardDelivery | null>(null)
 
   useEffect(() => {
-    const refresh = () => setDeliveries(getDeliveries())
-    window.addEventListener('stockflow:data-updated', refresh)
-    return () => window.removeEventListener('stockflow:data-updated', refresh)
-  }, [])
+    let active = true
 
-  const reloadDeliveries = () => {
-    setDeliveries(getDeliveries())
+    const refresh = async () => {
+      try {
+        await refreshDeliveriesFromSupabase()
+        if (active) setDeliveries(getDeliveries())
+      } catch (error) {
+        if (active) {
+          toast(
+            'error',
+            'Could not refresh deliveries',
+            error instanceof Error ? error.message : 'Unable to load the shared delivery register.'
+          )
+        }
+      }
+    }
+
+    void refresh()
+    window.addEventListener('stockflow:data-updated', refresh)
+    return () => {
+      active = false
+      window.removeEventListener('stockflow:data-updated', refresh)
+    }
+  }, [toast])
+
+  const reloadDeliveries = async () => {
+    try {
+      await refreshDeliveriesFromSupabase()
+      setDeliveries(getDeliveries())
+    } catch (error) {
+      toast(
+        'error',
+        'Could not refresh deliveries',
+        error instanceof Error ? error.message : 'Unable to load the shared delivery register.'
+      )
+    }
   }
 
   const filteredDeliveries = useMemo(() => {

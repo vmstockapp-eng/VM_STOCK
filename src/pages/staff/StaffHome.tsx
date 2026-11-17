@@ -105,7 +105,7 @@ export default function StaffHome() {
     setStaffReturnNotes(del.return_notes || '')
   }
 
-  const handleSaveStaffReturn = (e: React.FormEvent) => {
+  const handleSaveStaffReturn = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!returnModalDelivery) return
 
@@ -122,7 +122,7 @@ export default function StaffHome() {
 
     setIsSavingReturn(true)
     try {
-      const updated = updateDeliveryReturnKM(
+      const updated = await updateDeliveryReturnKM(
         returnModalDelivery.id,
         numInKm,
         staffReturnNotes.trim() || undefined,
