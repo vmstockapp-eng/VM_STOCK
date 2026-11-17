@@ -1,0 +1,142 @@
+﻿SKU,Name,Category,Grade,Diameter_mm,Pressure_Rating_kg,Coil_Length_m,Unit,Rate_INR,GST_Percent,Min_Stock_Threshold,Status
+AGP00001,Plain Pipe - 20 * 10 - 6 m,Agri PVC Pipes,Plain,20.0,10.0,6.0,PCS,156.0,18,,Active
+AGQ00012,Quickfit Pipe - 20 * 10 - 6 m,Agri PVC Pipes,Quickfit,20.0,10.0,6.0,PCS,158.0,18,,Active
+AGP00003,Plain Pipe - 25 * 8 - 6 m,Agri PVC Pipes,Plain,25.0,8.0,6.0,PCS,229.0,18,,Active
+AGQ00013,Quickfit Pipe - 25 * 8 - 6 m,Agri PVC Pipes,Quickfit,25.0,8.0,6.0,PCS,229.0,18,,Active
+AGP00006,Plain Pipe - 32 * 8 - 6 m,Agri PVC Pipes,Plain,32.0,8.0,6.0,PCS,350.0,18,,Active
+AGQ00015,Quickfit Pipe - 32 * 8 - 6 m,Agri PVC Pipes,Quickfit,32.0,8.0,6.0,PCS,350.0,18,,Active
+AGQ00017,Quickfit Pipe - 40 * 6 - 6 m,Agri PVC Pipes,Quickfit,40.0,6.0,6.0,PCS,370.0,18,,Active
+AGQ00020,Quickfit Pipe - 50 * 6 - 6 m,Agri PVC Pipes,Quickfit,50.0,6.0,6.0,PCS,570.0,18,,Active
+AGQ00023,Quickfit Pipe - 63 * 4 - 6 m,Agri PVC Pipes,Quickfit,63.0,4.0,6.0,PCS,631.0,18,,Active
+AGR00027,Ringfit Pipe - 63 * 4 - 6 m,Agri PVC Pipes,Ringfit,63.0,4.0,6.0,PCS,698.0,18,,Active
+AGQ00030,Quickfit Pipe - 75 * 4 - 6 m,Agri PVC Pipes,Quickfit,75.0,4.0,6.0,PCS,889.0,18,,Active
+AGR00034,Ringfit Pipe - 75 * 4 - 6 m,Agri PVC Pipes,Ringfit,75.0,4.0,6.0,PCS,964.0,18,,Active
+AGQ00037,Quickfit Pipe - 90 * 2.5 - 6 m,Agri PVC Pipes,Quickfit,90.0,2.5,6.0,PCS,821.0,18,,Active
+AGQ00038,Quickfit Pipe - 90 * 4 - 6 m,Agri PVC Pipes,Quickfit,90.0,4.0,6.0,PCS,1234.0,18,,Active
+AGR00042,Ringfit Pipe - 90 * 4 - 6 m,Agri PVC Pipes,Ringfit,90.0,4.0,6.0,PCS,1336.0,18,,Active
+AGQ00039,Quickfit Pipe - 90 * 6 - 6 m,Agri PVC Pipes,Quickfit,90.0,6.0,6.0,PCS,1808.0,18,,Active
+AGR00043,Ringfit Pipe - 90 * 6 - 6 m,Agri PVC Pipes,Ringfit,90.0,6.0,6.0,PCS,1941.0,18,,Active
+AGQ00045,Quickfit Pipe - 110 * 2.5 - 6 m,Agri PVC Pipes,Quickfit,110.0,2.5,6.0,PCS,1190.0,18,,Active
+AGQ00046,Quickfit Pipe - 110 * 4 - 6 m,Agri PVC Pipes,Quickfit,110.0,4.0,6.0,PCS,1818.0,18,,Active
+AGR00050,Ringfit Pipe - 110 * 4 - 6 m,Agri PVC Pipes,Ringfit,110.0,4.0,6.0,PCS,1967.0,18,,Active
+AGQ00047,Quickfit Pipe - 110 * 6 - 6 m,Agri PVC Pipes,Quickfit,110.0,6.0,6.0,PCS,2609.0,18,,Active
+AGR00051,Ringfit Pipe - 110 * 6 - 6 m,Agri PVC Pipes,Ringfit,110.0,6.0,6.0,PCS,2802.0,18,,Active
+AGQ00062,Quickfit Pipe - 140 * 4 - 6 m,Agri PVC Pipes,Quickfit,140.0,4.0,6.0,PCS,3006.0,18,,Active
+AGR00066,Ringfit Pipe - 140 * 4 - 6 m,Agri PVC Pipes,Ringfit,140.0,4.0,6.0,PCS,3164.0,18,,Active
+AGQ00063,Quickfit Pipe - 140 * 6 - 6 m,Agri PVC Pipes,Quickfit,140.0,6.0,6.0,PCS,4411.0,18,,Active
+AGR00067,Ringfit Pipe - 140 * 6 - 6 m,Agri PVC Pipes,Ringfit,140.0,6.0,6.0,PCS,4632.0,18,,Active
+AGQ00070,Quickfit Pipe - 160 * 4 - 6 m,Agri PVC Pipes,Quickfit,160.0,4.0,6.0,PCS,3935.0,18,,Active
+AGR00074,Ringfit Pipe - 160 * 4 - 6 m,Agri PVC Pipes,Ringfit,160.0,4.0,6.0,PCS,4110.0,18,,Active
+AGQ00071,Quickfit Pipe - 160 * 6 - 6 m,Agri PVC Pipes,Quickfit,160.0,6.0,6.0,PCS,5567.0,18,,Active
+AGR00075,Ringfit Pipe - 160 * 6 - 6 m,Agri PVC Pipes,Ringfit,160.0,6.0,6.0,PCS,5861.0,18,,Active
+AGQ00078,Quickfit Pipe - 180 * 4 - 6 m,Agri PVC Pipes,Quickfit,180.0,4.0,6.0,PCS,5048.0,18,,Active
+AGR00082,Ringfit Pipe - 180 * 4 - 6 m,Agri PVC Pipes,Ringfit,180.0,4.0,6.0,PCS,5417.0,18,,Active
+AGQ00079,Quickfit Pipe - 180 * 6 - 6 m,Agri PVC Pipes,Quickfit,180.0,6.0,6.0,PCS,7259.0,18,,Active
+AGR00083,Ringfit Pipe - 180 * 6 - 6 m,Agri PVC Pipes,Ringfit,180.0,6.0,6.0,PCS,7529.0,18,,Active
+P-63-OD25-8KG-SDR11-300M,PE-63 25*8 - SDR 11 - 300 m coil,HDPE Pipes,PE-63,25.0,8.0,300.0,metre,49.0,18,,Active
+P-63-OD25-8KG-SDR11-500M,PE-63 25*8 - SDR 11 - 500 m coil,HDPE Pipes,PE-63,25.0,8.0,500.0,metre,49.0,18,,Active
+P-63-OD32-6KG-SDR13.6-300M,PE-63 32*6 - SDR 13.6 - 300 m coil,HDPE Pipes,PE-63,32.0,6.0,300.0,metre,66.0,18,,Active
+P-63-OD32-6KG-SDR13.6-500M,PE-63 32*6 - SDR 13.6 - 500 m coil,HDPE Pipes,PE-63,32.0,6.0,500.0,metre,66.0,18,,Active
+P-63-OD32-6KG-SDR13.6-1000M,PE-63 32*6 - SDR 13.6 - 1000 m coil,HDPE Pipes,PE-63,32.0,6.0,1000.0,metre,66.0,18,,Active
+P-63-OD32-8KG-SDR11-500M,PE-63 32*8 - SDR 11 - 500 m coil,HDPE Pipes,PE-63,32.0,8.0,500.0,metre,78.0,18,,Active
+P-63-OD40-6KG-SDR13.6-300M,PE-63 40*6 - SDR 13.6 - 300 m coil,HDPE Pipes,PE-63,40.0,6.0,300.0,metre,103.0,18,,Active
+P-63-OD40-6KG-SDR13.6-500M,PE-63 40*6 - SDR 13.6 - 500 m coil,HDPE Pipes,PE-63,40.0,6.0,500.0,metre,103.0,18,,Active
+P-63-OD50-6KG-SDR13.6-300M,PE-63 50*6 - SDR 13.6 - 300 m coil,HDPE Pipes,PE-63,50.0,6.0,300.0,metre,158.0,18,,Active
+P-63-OD50-6KG-SDR13.6-500M,PE-63 50*6 - SDR 13.6 - 500 m coil,HDPE Pipes,PE-63,50.0,6.0,500.0,metre,158.0,18,,Active
+P-63-OD63-4KG-SDR21-100M,PE-63 63*4 - SDR 21 - 100 m coil,HDPE Pipes,PE-63,63.0,4.0,100.0,metre,165.0,18,,Active
+P-63-OD63-4KG-SDR21-200M,PE-63 63*4 - SDR 21 - 200 m coil,HDPE Pipes,PE-63,63.0,4.0,200.0,metre,165.0,18,,Active
+P-63-OD63-4KG-SDR21-300M,PE-63 63*4 - SDR 21 - 300 m coil,HDPE Pipes,PE-63,63.0,4.0,300.0,metre,165.0,18,,Active
+P-63-OD63-4KG-SDR21-500M,PE-63 63*4 - SDR 21 - 500 m coil,HDPE Pipes,PE-63,63.0,4.0,500.0,metre,165.0,18,,Active
+P-63-OD63-6KG-SDR13.6-100M,PE-63 63*6 - SDR 13.6 - 100 m coil,HDPE Pipes,PE-63,63.0,6.0,100.0,metre,253.0,18,,Active
+P-63-OD63-6KG-SDR13.6-200M,PE-63 63*6 - SDR 13.6 - 200 m coil,HDPE Pipes,PE-63,63.0,6.0,200.0,metre,253.0,18,,Active
+P-63-OD63-6KG-SDR13.6-300M,PE-63 63*6 - SDR 13.6 - 300 m coil,HDPE Pipes,PE-63,63.0,6.0,300.0,metre,253.0,18,,Active
+P-63-OD75-4KG-SDR21-100M,PE-63 75*4 - SDR 21 - 100 m coil,HDPE Pipes,PE-63,75.0,4.0,100.0,metre,235.0,18,,Active
+P-63-OD75-4KG-SDR21-200M,PE-63 75*4 - SDR 21 - 200 m coil,HDPE Pipes,PE-63,75.0,4.0,200.0,metre,235.0,18,,Active
+P-63-OD75-6KG-SDR13.6-100M,PE-63 75*6 - SDR 13.6 - 100 m coil,HDPE Pipes,PE-63,75.0,6.0,100.0,metre,356.0,18,,Active
+P-63-OD75-6KG-SDR13.6-200M,PE-63 75*6 - SDR 13.6 - 200 m coil,HDPE Pipes,PE-63,75.0,6.0,200.0,metre,356.0,18,,Active
+P-63-OD90-4KG-SDR21-100M,PE-63 90*4 - SDR 21 - 100 m coil,HDPE Pipes,PE-63,90.0,4.0,100.0,metre,335.0,18,,Active
+P-63-OD90-4KG-SDR21-200M,PE-63 90*4 - SDR 21 - 200 m coil,HDPE Pipes,PE-63,90.0,4.0,200.0,metre,335.0,18,,Active
+P-63-OD90-6KG-SDR13.6-100M,PE-63 90*6 - SDR 13.6 - 100 m coil,HDPE Pipes,PE-63,90.0,6.0,100.0,metre,513.0,18,,Active
+P-63-OD90-6KG-SDR13.6-200M,PE-63 90*6 - SDR 13.6 - 200 m coil,HDPE Pipes,PE-63,90.0,6.0,200.0,metre,513.0,18,,Active
+P-63-OD110-4KG-SDR21-50M,PE-63 110*4 - SDR 21 - 50 m coil,HDPE Pipes,PE-63,110.0,4.0,50.0,metre,506.0,18,,Active
+P-63-OD110-4KG-SDR21-100M,PE-63 110*4 - SDR 21 - 100 m coil,HDPE Pipes,PE-63,110.0,4.0,100.0,metre,506.0,18,,Active
+P-80-OD20-10KG-SDR11-300M,PE-80 20*10 - SDR 11 - 300 m coil,HDPE Pipes,PE-80,20.0,10.0,300.0,metre,33.0,18,,Active
+P-80-OD20-10KG-SDR11-500M,PE-80 20*10 - SDR 11 - 500 m coil,HDPE Pipes,PE-80,20.0,10.0,500.0,metre,33.0,18,,Active
+P-80-OD25-8KG-SDR13.6-300M,PE-80 25*8 - SDR 13.6 - 300 m coil,HDPE Pipes,PE-80,25.0,8.0,300.0,metre,41.0,18,,Active
+P-80-OD25-8KG-SDR13.6-500M,PE-80 25*8 - SDR 13.6 - 500 m coil,HDPE Pipes,PE-80,25.0,8.0,500.0,metre,41.0,18,,Active
+P-80-OD32-6KG-SDR17-300M,PE-80 32*6 - SDR 17 - 300 m coil,HDPE Pipes,PE-80,32.0,6.0,300.0,metre,54.0,18,,Active
+P-80-OD32-6KG-SDR17-500M,PE-80 32*6 - SDR 17 - 500 m coil,HDPE Pipes,PE-80,32.0,6.0,500.0,metre,54.0,18,,Active
+P-80-OD32-6KG-SDR17-1000M,PE-80 32*6 - SDR 17 - 1000 m coil,HDPE Pipes,PE-80,32.0,6.0,1000.0,metre,54.0,18,,Active
+P-80-OD32-8KG-SDR13.6-500M,PE-80 32*8 - SDR 13.6 - 500 m coil,HDPE Pipes,PE-80,32.0,8.0,500.0,metre,66.0,18,,Active
+P-80-OD32-10KG-SDR11-500M,PE-80 32*10 - SDR 11 - 500 m coil,HDPE Pipes,PE-80,32.0,10.0,500.0,metre,78.0,18,,Active
+P-80-OD40-6KG-SDR17-300M,PE-80 40*6 - SDR 17 - 300 m coil,HDPE Pipes,PE-80,40.0,6.0,300.0,metre,84.0,18,,Active
+P-80-OD40-6KG-SDR17-500M,PE-80 40*6 - SDR 17 - 500 m coil,HDPE Pipes,PE-80,40.0,6.0,500.0,metre,84.0,18,,Active
+P-80-OD50-6KG-SDR17-300M,PE-80 50*6 - SDR 17 - 300 m coil,HDPE Pipes,PE-80,50.0,6.0,300.0,metre,130.0,18,,Active
+P-80-OD50-6KG-SDR17-500M,PE-80 50*6 - SDR 17 - 500 m coil,HDPE Pipes,PE-80,50.0,6.0,500.0,metre,130.0,18,,Active
+P-80-OD63-4KG-SDR26-100M,PE-80 63*4 - SDR 26 - 100 m coil,HDPE Pipes,PE-80,63.0,4.0,100.0,metre,140.0,18,,Active
+P-80-OD63-4KG-SDR26-200M,PE-80 63*4 - SDR 26 - 200 m coil,HDPE Pipes,PE-80,63.0,4.0,200.0,metre,140.0,18,,Active
+P-80-OD63-4KG-SDR26-300M,PE-80 63*4 - SDR 26 - 300 m coil,HDPE Pipes,PE-80,63.0,4.0,300.0,metre,140.0,18,,Active
+P-80-OD63-4KG-SDR26-500M,PE-80 63*4 - SDR 26 - 500 m coil,HDPE Pipes,PE-80,63.0,4.0,500.0,metre,140.0,18,,Active
+P-80-OD63-6KG-SDR17-100M,PE-80 63*6 - SDR 17 - 100 m coil,HDPE Pipes,PE-80,63.0,6.0,100.0,metre,201.0,18,,Active
+P-80-OD63-6KG-SDR17-200M,PE-80 63*6 - SDR 17 - 200 m coil,HDPE Pipes,PE-80,63.0,6.0,200.0,metre,201.0,18,,Active
+P-80-OD63-6KG-SDR17-300M,PE-80 63*6 - SDR 17 - 300 m coil,HDPE Pipes,PE-80,63.0,6.0,300.0,metre,201.0,18,,Active
+P-80-OD75-4KG-SDR26-100M,PE-80 75*4 - SDR 26 - 100 m coil,HDPE Pipes,PE-80,75.0,4.0,100.0,metre,193.0,18,,Active
+P-80-OD75-4KG-SDR26-200M,PE-80 75*4 - SDR 26 - 200 m coil,HDPE Pipes,PE-80,75.0,4.0,200.0,metre,193.0,18,,Active
+P-80-OD75-6KG-SDR17-100M,PE-80 75*6 - SDR 17 - 100 m coil,HDPE Pipes,PE-80,75.0,6.0,100.0,metre,291.0,18,,Active
+P-80-OD75-6KG-SDR17-200M,PE-80 75*6 - SDR 17 - 200 m coil,HDPE Pipes,PE-80,75.0,6.0,200.0,metre,291.0,18,,Active
+P-80-OD90-4KG-SDR26-100M,PE-80 90*4 - SDR 26 - 100 m coil,HDPE Pipes,PE-80,90.0,4.0,100.0,metre,284.0,18,,Active
+P-80-OD90-4KG-SDR26-200M,PE-80 90*4 - SDR 26 - 200 m coil,HDPE Pipes,PE-80,90.0,4.0,200.0,metre,284.0,18,,Active
+P-80-OD90-6KG-SDR17-100M,PE-80 90*6 - SDR 17 - 100 m coil,HDPE Pipes,PE-80,90.0,6.0,100.0,metre,409.0,18,,Active
+P-80-OD90-6KG-SDR17-200M,PE-80 90*6 - SDR 17 - 200 m coil,HDPE Pipes,PE-80,90.0,6.0,200.0,metre,409.0,18,,Active
+P-80-OD110-4KG-SDR26-50M,PE-80 110*4 - SDR 26 - 50 m coil,HDPE Pipes,PE-80,110.0,4.0,50.0,metre,413.0,18,,Active
+P-80-OD110-4KG-SDR26-100M,PE-80 110*4 - SDR 26 - 100 m coil,HDPE Pipes,PE-80,110.0,4.0,100.0,metre,413.0,18,,Active
+P-100-OD32-8KG-SDR17-500M,PE-100 32*8 - SDR 17 - 500 m coil,HDPE Pipes,PE-100,32.0,8.0,500.0,metre,69.0,18,,Active
+P-100-OD32-10KG-SDR13.6-500M,PE-100 32*10 - SDR 13.6 - 500 m coil,HDPE Pipes,PE-100,32.0,10.0,500.0,metre,80.0,18,,Active
+P-100-OD40-6KG-SDR21-300M,PE-100 40*6 - SDR 21 - 300 m coil,HDPE Pipes,PE-100,40.0,6.0,300.0,metre,72.0,18,,Active
+P-100-OD40-6KG-SDR21-500M,PE-100 40*6 - SDR 21 - 500 m coil,HDPE Pipes,PE-100,40.0,6.0,500.0,metre,72.0,18,,Active
+P-100-OD50-6KG-SDR21-300M,PE-100 50*6 - SDR 21 - 300 m coil,HDPE Pipes,PE-100,50.0,6.0,300.0,metre,93.0,18,,Active
+P-100-OD50-6KG-SDR21-500M,PE-100 50*6 - SDR 21 - 500 m coil,HDPE Pipes,PE-100,50.0,6.0,500.0,metre,93.0,18,,Active
+P-100-OD63-6KG-SDR21-100M,PE-100 63*6 - SDR 21 - 100 m coil,HDPE Pipes,PE-100,63.0,6.0,100.0,metre,144.0,18,,Active
+P-100-OD63-6KG-SDR21-200M,PE-100 63*6 - SDR 21 - 200 m coil,HDPE Pipes,PE-100,63.0,6.0,200.0,metre,144.0,18,,Active
+P-100-OD63-6KG-SDR21-300M,PE-100 63*6 - SDR 21 - 300 m coil,HDPE Pipes,PE-100,63.0,6.0,300.0,metre,144.0,18,,Active
+P-100-OD75-4KG-SDR33-100M,PE-100 75*4 - SDR 33 - 100 m coil,HDPE Pipes,PE-100,75.0,4.0,100.0,metre,160.0,18,,Active
+P-100-OD75-4KG-SDR33-200M,PE-100 75*4 - SDR 33 - 200 m coil,HDPE Pipes,PE-100,75.0,4.0,200.0,metre,160.0,18,,Active
+P-100-OD75-6KG-SDR21-100M,PE-100 75*6 - SDR 21 - 100 m coil,HDPE Pipes,PE-100,75.0,6.0,100.0,metre,245.0,18,,Active
+P-100-OD75-6KG-SDR21-200M,PE-100 75*6 - SDR 21 - 200 m coil,HDPE Pipes,PE-100,75.0,6.0,200.0,metre,245.0,18,,Active
+P-100-OD90-4KG-SDR33-100M,PE-100 90*4 - SDR 33 - 100 m coil,HDPE Pipes,PE-100,90.0,4.0,100.0,metre,231.0,18,,Active
+P-100-OD90-4KG-SDR33-200M,PE-100 90*4 - SDR 33 - 200 m coil,HDPE Pipes,PE-100,90.0,4.0,200.0,metre,231.0,18,,Active
+P-100-OD90-6KG-SDR21-100M,PE-100 90*6 - SDR 21 - 100 m coil,HDPE Pipes,PE-100,90.0,6.0,100.0,metre,352.0,18,,Active
+P-100-OD90-6KG-SDR21-200M,PE-100 90*6 - SDR 21 - 200 m coil,HDPE Pipes,PE-100,90.0,6.0,200.0,metre,352.0,18,,Active
+P-100-OD110-4KG-SDR33-50M,PE-100 110*4 - SDR 33 - 50 m coil,HDPE Pipes,PE-100,110.0,4.0,50.0,metre,348.0,18,,Active
+P-100-OD110-4KG-SDR33-100M,PE-100 110*4 - SDR 33 - 100 m coil,HDPE Pipes,PE-100,110.0,4.0,100.0,metre,348.0,18,,Active
+SWR00742,Non ISI SWR Pipe - 75 mm - 3 m,SWR Pipes,StramLine Non ISI Pipe,75.0,,3.0,PCS,375.0,18,,Active
+SWR00736,SWR Type A - 75 mm - 3 m,SWR Pipes,Supreme Type A,75.0,,3.0,PCS,447.0,18,,Active
+SWR00739,SWR Type B - 75 mm - 3 m,SWR Pipes,Supreme Type B,75.0,,3.0,PCS,784.0,18,,Active
+SWR00743,Non ISI SWR Pipe - 110 mm - 3 m,SWR Pipes,StramLine Non ISI Pipe,110.0,,3.0,PCS,627.0,18,,Active
+SWR00737,SWR Type A - 110 mm - 3 m,SWR Pipes,Supreme Type A,110.0,,3.0,PCS,803.0,18,,Active
+SWR00740,SWR Type B - 110 mm - 3 m,SWR Pipes,Supreme Type B,110.0,,3.0,PCS,1161.0,18,,Active
+SWR00738,SWR Type A - 160 mm - 3 m,SWR Pipes,Supreme Type A,160.0,,3.0,PCS,1821.0,18,,Active
+SWR00741,SWR Type B - 160 mm - 3 m,SWR Pipes,Supreme Type B,160.0,,3.0,PCS,2153.0,18,,Active
+WT00744,Siltank 4 Layer - 200 L,Water Tank,Siltank; Four Layer; White; Item Code RLTOWT0200WH,,,,PCS,1883.5,18,,Active
+WT00745,Siltank 4 Layer - 300 L,Water Tank,Siltank; Four Layer; White; Item Code RLTOWT0314WH,,,,PCS,2825.5,18,,Active
+WT00753,EcoSil 4 Layer - 500 L,Water Tank,EcoSil; Four Layer; White; Item Code BLWOWT0500WH,,,,PCS,3430.4,18,,Active
+WT00746,Siltank 4 Layer - 500 L,Water Tank,Siltank; Four Layer; White; Item Code RLTOWT0504WH,,,,PCS,4272.4,18,,Active
+WT00754,EcoSil 4 Layer - 750 L,Water Tank,EcoSil; Four Layer; White; Item Code BLWOWT0750WH,,,,PCS,5145.6,18,,Active
+WT00747,Siltank 4 Layer - 750 L,Water Tank,Siltank; Four Layer; White; Item Code RLTOWT0754WH,,,,PCS,6408.6,18,,Active
+WT00755,EcoSil 4 Layer - 1000 L,Water Tank,EcoSil; Four Layer; White; Item Code BLWOWT1004WH,,,,PCS,6860.7,18,,Active
+WT00748,Siltank 4 Layer - 1000 L,Water Tank,Siltank; Four Layer; White; Item Code RLTOWT1004WH,,,,PCS,8544.7,18,,Active
+WT00756,EcoSil 4 Layer - 1500 L,Water Tank,EcoSil; Four Layer; White; Item Code BLWOWT1500WH,,,,PCS,10291.1,18,,Active
+WT00749,Siltank 4 Layer - 1500 L,Water Tank,Siltank; Four Layer; White; Item Code RLTOWT1504WH,,,,PCS,12817.1,18,,Active
+WT00757,EcoSil 4 Layer - 2000 L,Water Tank,EcoSil; Four Layer; White; Item Code BLWOWT2000WH,,,,PCS,13721.4,18,,Active
+WT00750,Siltank 4 Layer - 2000 L,Water Tank,Siltank; Four Layer; White; Item Code RLTOWT2004WH,,,,PCS,17089.4,18,,Active
+WT00751,Siltank 4 Layer - 3000 L,Water Tank,Siltank; Four Layer; White; Item Code RLTOWT3004WH,,,,PCS,31060.3,18,,Active
+WT00752,Siltank 4 Layer - 5000 L,Water Tank,Siltank; Four Layer; White; Item Code RLTOWT5004WH,,,,PCS,51767.1,18,,Active
+HDPE-ID50-REG-210M,"HDPE ID 50 mm (2"") - Regular - 210 m bundle",HDPE Pipes,NON-ISI Regular,50.0,,210.0,metre,136.0,18,,Active
+HDPE-ID50-EF-210M,"HDPE ID 50 mm (2"") - Extra Flow - 210 m bundle",HDPE Pipes,NON-ISI Extra Flow,50.0,,210.0,metre,139.0,18,,Active
+HDPE-ID63-REG-105M,"HDPE ID 63 mm (2 1/2"") - Regular - 105 m bundle",HDPE Pipes,NON-ISI Regular,63.0,,105.0,metre,216.0,18,,Active
+HDPE-ID63-EF-105M,"HDPE ID 63 mm (2 1/2"") - Extra Flow - 105 m bundle",HDPE Pipes,NON-ISI Extra Flow,63.0,,105.0,metre,223.0,18,,Active
+HDPE-ID75-REG-100M,"HDPE ID 75 mm (3"") - Regular - 100 m bundle",HDPE Pipes,NON-ISI Regular,75.0,,100.0,metre,287.0,18,,Active
+HDPE-ID75-EF-100M,"HDPE ID 75 mm (3"") - Extra Flow - 100 m bundle",HDPE Pipes,NON-ISI Extra Flow,75.0,,100.0,metre,300.0,18,,Active
+HDPE-COLUMN-2IN-ECO,"HDPE ID Column Pipe 2"" - 3 m - Eco-Standard Duty",HDPE Pipes,NON-ISI Column Pipe - Eco-Standard Duty,,,3.0,PCS,1001.0,18,,Active
+HDPE-COLUMN-2IN-STD,"HDPE ID Column Pipe 2"" - 3 m - Standard Duty",HDPE Pipes,NON-ISI Column Pipe - Standard Duty,,,3.0,PCS,1161.0,18,,Active
+HDPE-COLUMN-2IN-HEAVY,"HDPE ID Column Pipe 2"" - 3 m - Heavy Duty",HDPE Pipes,NON-ISI Column Pipe - Heavy Duty,,,3.0,PCS,1454.0,18,,Active
