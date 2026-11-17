@@ -539,7 +539,7 @@ export default function StaffOutwardDelivery() {
               <label className="label">D.O. Number *</label>
               <input
                 type="text"
-                placeholder="e.g. DO-2026-889"
+                placeholder="0"
                 value={doNumber}
                 onChange={e => setDoNumber(e.target.value)}
                 className="input-field"
@@ -549,7 +549,7 @@ export default function StaffOutwardDelivery() {
               <label className="label">Cash / Credit Memo No.</label>
               <input
                 type="text"
-                placeholder="e.g. MEMO-4412"
+                placeholder="0"
                 value={memoNumber}
                 onChange={e => setMemoNumber(e.target.value)}
                 className="input-field"
@@ -559,20 +559,20 @@ export default function StaffOutwardDelivery() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="label">Customer / Party Name *</label>
+              <label className="label">Customer Name *</label>
               <input
                 type="text"
-                placeholder="e.g. Pravin Traders / Balaji Agro"
+                placeholder=""
                 value={customerName}
                 onChange={e => setCustomerName(e.target.value)}
                 className="input-field"
               />
             </div>
             <div>
-              <label className="label">Destination City / Taluka *</label>
+              <label className="label">Destination City *</label>
               <input
                 type="text"
-                placeholder="e.g. Baramati, Pune"
+                placeholder=""
                 value={city}
                 onChange={e => setCity(e.target.value)}
                 className="input-field"
@@ -581,10 +581,10 @@ export default function StaffOutwardDelivery() {
           </div>
 
           <div>
-            <label className="label">Delivery Address / Site Landmark (Optional)</label>
+            <label className="label">Delivery Address (Optional)</label>
             <input
               type="text"
-              placeholder="e.g. Gat 144, Near Toll Plaza, NH-48"
+              placeholder=""
               value={deliveryAddress}
               onChange={e => setDeliveryAddress(e.target.value)}
               className="input-field"
@@ -592,10 +592,10 @@ export default function StaffOutwardDelivery() {
           </div>
 
           <div>
-            <label className="label">Delivery Notes / Remarks (Optional)</label>
+            <label className="label">Delivery Notes </label>
             <textarea
               rows={2}
-              placeholder="e.g. Urgent morning delivery, recipient contact Mohan Patil"
+              placeholder=""
               value={deliveryNotes}
               onChange={e => setDeliveryNotes(e.target.value)}
               className="input-field text-xs resize-none"
@@ -694,7 +694,7 @@ export default function StaffOutwardDelivery() {
 
           {extraItems.length === 0 ? (
             <p className="text-xs text-[#72869A] py-2 text-center italic">
-              No extra products added. Click "+ Add Item" if delivering HDPE coils, tanks, or special sizes.
+             Click + Add Item.
             </p>
           ) : (
             <div className="space-y-2.5 pt-1">
@@ -764,7 +764,7 @@ export default function StaffOutwardDelivery() {
             5. Fittings & Accessories Details
           </h2>
           <p className="text-[11px] text-[#72869A]">
-            Enter free-form description of fittings, elbows, tees, solvent cement, or valves included in this vehicle
+            
           </p>
           <textarea
             rows={2}
@@ -781,7 +781,7 @@ export default function StaffOutwardDelivery() {
             <h2 className="text-xs font-bold text-[#72869A] uppercase tracking-wider">
               6. Vehicle, Driver & Odometer Dispatch Reading
             </h2>
-            <p className="text-[11px] text-[#72869A]">Select dispatch vehicle and driver or enter custom details</p>
+            <p className="text-[11px] text-[#72869A]"></p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

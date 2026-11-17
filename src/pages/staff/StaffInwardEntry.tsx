@@ -433,7 +433,7 @@ export default function StaffInwardEntry() {
                             <input
                               type="number"
                               min="0"
-                              placeholder="0 (blank = none)"
+                              placeholder="0"
                               value={qtyVal}
                               onChange={e => handleQtyChange(prod.id, e.target.value)}
                               className="input-field text-right font-extrabold text-[#16845B]"

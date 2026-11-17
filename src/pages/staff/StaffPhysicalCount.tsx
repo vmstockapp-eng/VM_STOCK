@@ -273,12 +273,13 @@ export default function StaffPhysicalCount() {
             </div>
           </div>
 
-          <div className="p-3 bg-[#E7F3F1] rounded-xl border border-[#0D827D]/30 text-[11px] text-[#20384A] flex items-center gap-2">
+          {/* <div className="p-3 bg-[#E7F3F1] rounded-xl border border-[#0D827D]/30 text-[11px] text-[#20384A] flex items-center gap-2">
             <Info className="w-4 h-4 text-[#0D827D] shrink-0" />
             <span>
               <strong>Direct Stock Adjustment:</strong> Submitting will adjust godown inventory to match the counted quantity and record traceable adjustment ledger entries.
             </span>
-          </div>
+          </div> */}
+          
         </div>
 
         {/* Product Physical Count List */}
