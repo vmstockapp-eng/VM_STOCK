@@ -271,8 +271,35 @@ export async function importProductsToSupabase(
 
   if (records.length === 0) return result
 
-  const { error } = await getSupabase().from('products').upsert(records, { onConflict: 'sku' })
-  if (error) throw databaseError('import products', error)
+  // IMPORTANT: Do not mix rows with IDs and rows without IDs in one bulk
+  // request. PostgREST can treat a missing ID as NULL when rows in the same
+  // request have different keys, violating products.id NOT NULL.
+  const recordsToUpdate = records.filter(
+    record => typeof record.id === 'string' && record.id.trim().length > 0
+  )
+  const recordsToInsert = records
+    .filter(record => typeof record.id !== 'string' || record.id.trim().length === 0)
+    .map(({ id: _ignoredId, ...productFields }) => productFields)
+
+  const supabase = getSupabase()
+
+  // Existing products always have a valid ID; send them in a separate request.
+  if (recordsToUpdate.length > 0) {
+    const { error } = await supabase
+      .from('products')
+      .upsert(recordsToUpdate, { onConflict: 'sku' })
+
+    if (error) throw databaseError('update imported products', error)
+  }
+
+  // New products omit ID entirely so the database can generate it.
+  if (recordsToInsert.length > 0) {
+    const { error } = await supabase
+      .from('products')
+      .insert(recordsToInsert)
+
+    if (error) throw databaseError('create imported products', error)
+  }
 
   for (const action of recordActions) result[action]++
   return result
