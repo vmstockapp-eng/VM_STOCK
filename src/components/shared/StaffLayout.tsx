@@ -66,7 +66,7 @@ export function StaffLayout({ children, title, showBackButton = false, onBack }:
             )}
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-sm tracking-tight text-white truncate">StockFlow Pro</span>
+                <span className="font-bold text-sm tracking-tight text-white truncate">VM Stock</span>
                 {assignedWarehouse && (
                   <span className="text-[10px] bg-[#0D827D]/40 text-teal-200 px-1.5 py-0.2 rounded border border-[#0D827D]/60 truncate hidden sm:inline-block">
                     {assignedWarehouse.code}

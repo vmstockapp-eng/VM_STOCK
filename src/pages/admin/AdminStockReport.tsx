@@ -208,7 +208,7 @@ export default function AdminStockReport() {
                 <Package className="w-5 h-5 text-[#0D827D]" />
               </div>
               <div>
-                <h2 className="text-base font-extrabold text-[#102C42]">STOCKFLOW PRO — WHOLESALE INVENTORY</h2>
+                <h2 className="text-base font-extrabold text-[#102C42]">VM STOCK — WHOLESALE INVENTORY</h2>
                 <p className="text-xs text-[#72869A]">Pipes, fittings, and water storage inventory</p>
               </div>
             </div>
@@ -471,7 +471,7 @@ export default function AdminStockReport() {
           </div>
           <div className="text-center w-48">
             <div className="border-t border-black pt-1 font-bold">Authorized Signatory</div>
-            <p className="text-[10px] text-[#72869A]">For StockFlow Pro</p>
+            <p className="text-[10px] text-[#72869A]">For VM Stock</p>
           </div>
         </div>
       </div>

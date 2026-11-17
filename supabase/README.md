@@ -58,3 +58,9 @@ supabase/
 ├── create_admin.sql             # Template to insert first admin profile
 └── README.md                    # This file
 ```
+
+## 4. Staff inward/outward transaction persistence (migration 004)
+
+`004_staff_transaction_sync.sql` adds atomic RPCs used by the staff inward receipt and outward delivery forms. Apply this reviewed additive migration in the Supabase SQL Editor after confirming the existing tables match migrations 001 and 003. The application now waits for the RPC to succeed before showing a successful save. Inward/outward records and their lines, stock balance changes, and posted movements are stored in the normalized Supabase tables. The compatibility cache is refreshed at login and on realtime events.
+
+This change specifically migrates inward and outward transaction submission. Daily stock reports, manual movements, and physical-count workflows still require their own database persistence conversion before claiming every operational workflow is fully migrated.

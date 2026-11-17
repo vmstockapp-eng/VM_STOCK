@@ -26,8 +26,19 @@ export default function StaffOutwardDelivery() {
 
   const warehouses = useMemo(() => getWarehouses(), [])
   const allProducts = useMemo(() => getProducts(), [])
-  const registeredVehicles = useMemo(() => getVehicles(true), [])
-  const registeredDrivers = useMemo(() => getDrivers(true), [])
+  const [catalogVersion, setCatalogVersion] = useState(0)
+  const registeredVehicles = useMemo(() => getVehicles(true), [catalogVersion])
+  const registeredDrivers = useMemo(() => getDrivers(true), [catalogVersion])
+
+  // Ensure vehicle/driver dropdowns use the shared Supabase-backed catalog,
+  // not an empty cache captured on the first render.
+  useEffect(() => {
+    let active = true
+    hydrateCatalogCacheFromSupabase()
+      .then(() => { if (active) setCatalogVersion(v => v + 1) })
+      .catch(error => console.error('Unable to refresh vehicle/driver catalog:', error))
+    return () => { active = false }
+  }, [])
 
   const defaultWhId = profile?.warehouse_id || ''
   const [warehouseId, setWarehouseId] = useState<string>(defaultWhId)
@@ -68,11 +79,11 @@ export default function StaffOutwardDelivery() {
   const [fittingsDetails, setFittingsDetails] = useState('')
 
   // Vehicle Selection
-  const [selectedVehicleId, setSelectedVehicleId] = useState<string>(registeredVehicles[0]?.id || 'other')
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>('')
   const [otherVehicleNumber, setOtherVehicleNumber] = useState('')
 
   // Driver Selection
-  const [selectedDriverId, setSelectedDriverId] = useState<string>(registeredDrivers[0]?.id || 'other')
+  const [selectedDriverId, setSelectedDriverId] = useState<string>('')
   const [otherDriverName, setOtherDriverName] = useState('')
   const [otherDriverPhone, setOtherDriverPhone] = useState('')
   const [otherDriverAddress, setOtherDriverAddress] = useState('')
@@ -221,6 +232,14 @@ export default function StaffOutwardDelivery() {
         toast('error', 'Missing Odometer KM', 'Please enter Vehicle Out KM reading at dispatch.')
         return
       }
+      if (!selectedVehicleId) {
+        toast('error', 'Vehicle Required', 'Please select a registered vehicle or choose Other / External Vehicle.')
+        return
+      }
+      if (!selectedDriverId) {
+        toast('error', 'Driver Required', 'Please select a registered driver or choose Other / Outside Driver.')
+        return
+      }
       if (selectedVehicleId === 'other' && !otherVehicleNumber.trim()) {
         toast('error', 'Vehicle Registration Required', 'Please enter the registration number for Other Vehicle.')
         return
@@ -292,22 +311,22 @@ export default function StaffOutwardDelivery() {
     // Resolve vehicle registration
     let resolvedVehicleReg = ''
     let chosenVehicleId: string | null = null
-    if (selectedVehicleId !== 'other') {
+    if (selectedVehicleId && selectedVehicleId !== 'other') {
       const v = registeredVehicles.find(veh => veh.id === selectedVehicleId)
       resolvedVehicleReg = v ? v.registration_number : ''
       chosenVehicleId = selectedVehicleId
-    } else {
+    } else if (selectedVehicleId === 'other') {
       resolvedVehicleReg = otherVehicleNumber.trim().toUpperCase()
     }
 
     // Resolve driver name
     let resolvedDriverName = ''
     let chosenDriverId: string | null = null
-    if (selectedDriverId !== 'other') {
+    if (selectedDriverId && selectedDriverId !== 'other') {
       const d = registeredDrivers.find(drv => drv.id === selectedDriverId)
       resolvedDriverName = d ? d.full_name : ''
       chosenDriverId = selectedDriverId
-    } else {
+    } else if (selectedDriverId === 'other') {
       resolvedDriverName = otherDriverName.trim()
     }
 
@@ -326,11 +345,11 @@ export default function StaffOutwardDelivery() {
         fittings_details: fittingsDetails.trim() || null,
 
         vehicle_id: chosenVehicleId,
-        vehicle_registration_number: resolvedVehicleReg || 'UNREGISTERED',
+        vehicle_registration_number: resolvedVehicleReg,
         other_vehicle_number: selectedVehicleId === 'other' ? otherVehicleNumber.trim().toUpperCase() : null,
 
         driver_id: chosenDriverId,
-        driver_name: resolvedDriverName || 'Unassigned',
+        driver_name: resolvedDriverName,
         other_driver_phone: selectedDriverId === 'other' ? otherDriverPhone.trim() : null,
         other_driver_address: selectedDriverId === 'other' ? otherDriverAddress.trim() : null,
 
@@ -774,9 +793,14 @@ export default function StaffOutwardDelivery() {
               </label>
               <select
                 value={selectedVehicleId}
-                onChange={e => setSelectedVehicleId(e.target.value)}
+                onChange={e => {
+                  const value = e.target.value
+                  setSelectedVehicleId(value)
+                  if (value !== 'other') setOtherVehicleNumber('')
+                }}
                 className="input-field"
               >
+                <option value="">— Select vehicle —</option>
                 {registeredVehicles.map(veh => (
                   <option key={veh.id} value={veh.id}>
                     {veh.registration_number} — {veh.name} ({veh.vehicle_type})
@@ -794,9 +818,18 @@ export default function StaffOutwardDelivery() {
               </label>
               <select
                 value={selectedDriverId}
-                onChange={e => setSelectedDriverId(e.target.value)}
+                onChange={e => {
+                  const value = e.target.value
+                  setSelectedDriverId(value)
+                  if (value !== 'other') {
+                    setOtherDriverName('')
+                    setOtherDriverPhone('')
+                    setOtherDriverAddress('')
+                  }
+                }}
                 className="input-field"
               >
+                <option value="">— Select driver —</option>
                 {registeredDrivers.map(drv => (
                   <option key={drv.id} value={drv.id}>
                     {drv.full_name} {drv.phone ? `(${drv.phone})` : ''}

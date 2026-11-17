@@ -35,7 +35,7 @@ export default class ErrorBoundary extends Component<Props, State> {
 
             <h1 className="text-lg font-bold text-[#102C42] mb-1">Application Error</h1>
             <p className="text-xs text-[#72869A] mb-4">
-              StockFlow Pro encountered an unexpected issue while rendering this view.
+              VM Stock encountered an unexpected issue while rendering this view.
             </p>
 
             {this.state.error && (

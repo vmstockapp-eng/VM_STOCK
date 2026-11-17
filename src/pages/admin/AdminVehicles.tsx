@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   Truck, Plus, Search, Filter, CheckCircle2, XCircle, AlertTriangle,
   Edit, Eye, ArrowLeftRight, Calendar, Phone, ShieldCheck, History,
@@ -8,7 +8,7 @@ import { AdminLayout } from '../../components/shared/AdminLayout'
 import { useAuth } from '../../store/AuthContext'
 import { useToast } from '../../store/ToastContext'
 import {
-  getVehicles, saveVehicle, toggleVehicleActive, getVehicleDeliveries
+  getVehicles, saveVehicle, toggleVehicleActive, getVehicleDeliveries, hydrateCatalogCacheFromSupabase
 } from '../../lib/dataService'
 import type { Vehicle, OutwardDelivery } from '../../types'
 import { formatDate, formatNumber } from '../../lib/utils'
@@ -45,6 +45,19 @@ export default function AdminVehicles() {
   const reloadVehicles = () => {
     setVehicles(getVehicles())
   }
+
+  // Always load the shared database catalog on this screen; localStorage is
+  // only a cache and must never be treated as the source of truth.
+  useEffect(() => {
+    let active = true
+    hydrateCatalogCacheFromSupabase()
+      .then(() => { if (active) reloadVehicles() })
+      .catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : 'Unable to load vehicles from Supabase.'
+        toast('error', 'Vehicle Catalog Load Failed', message)
+      })
+    return () => { active = false }
+  }, [])
 
   const handleOpenAdd = () => {
     setEditingVehicle(null)
@@ -84,9 +97,9 @@ export default function AdminVehicles() {
     setHistoryDeliveries(dels)
   }
 
-  const handleToggleStatus = (id: string, name: string) => {
+  const handleToggleStatus = async (id: string, name: string) => {
     try {
-      const updated = toggleVehicleActive(id)
+      const updated = await toggleVehicleActive(id)
       reloadVehicles()
       toast('info', 'Vehicle Status Changed', `${name} is now ${updated.is_active ? 'Active' : 'Inactive'}.`)
     } catch (err: any) {
@@ -94,7 +107,7 @@ export default function AdminVehicles() {
     }
   }
 
-  const handleSaveVehicle = (e: React.FormEvent) => {
+  const handleSaveVehicle = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim()) {
       toast('error', 'Missing Name', 'Vehicle Name is required.')
@@ -106,7 +119,7 @@ export default function AdminVehicles() {
     }
 
     try {
-      saveVehicle({
+      await saveVehicle({
         id: editingVehicle?.id,
         name: name.trim(),
         registration_number: regNumber.trim().toUpperCase(),

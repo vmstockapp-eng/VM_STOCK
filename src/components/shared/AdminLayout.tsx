@@ -21,20 +21,20 @@ const navItems: NavItem[] = [
   { label: 'Dashboard', to: '/admin/dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
   { label: 'Deliveries', to: '/admin/deliveries', icon: <Truck className="w-4 h-4" /> },
   { label: 'Inward History', to: '/admin/inward', icon: <ArrowDownLeft className="w-4 h-4" /> },
-  { label: 'Vehicles', to: '/admin/vehicles', icon: <Truck className="w-4 h-4" /> },
-  { label: 'Stock Ledger', to: '/admin/stock-ledger', icon: <BookOpen className="w-4 h-4" /> },
   { label: 'Current Stock Report', to: '/admin/stock-report', icon: <FileSpreadsheet className="w-4 h-4" /> },
+  { label: 'Stock Ledger', to: '/admin/stock-ledger', icon: <BookOpen className="w-4 h-4" /> },
   { label: 'Products', to: '/admin/products', icon: <Package className="w-4 h-4" /> },
   { label: 'Categories', to: '/admin/categories', icon: <Tag className="w-4 h-4" /> },
+  { label: 'Vehicles', to: '/admin/vehicles', icon: <Truck className="w-4 h-4" /> },
   { label: 'Warehouses', to: '/admin/warehouses', icon: <Warehouse className="w-4 h-4" /> },
   { label: 'Staff & Drivers', to: '/admin/staff', icon: <Users className="w-4 h-4" /> },
   { label: 'Rates & Discounts', to: '/admin/rates-discounts', icon: <Percent className="w-4 h-4" /> },
-  { label: 'Reports', to: '/admin/reports', icon: <BarChart2 className="w-4 h-4" /> },
+  // { label: 'Reports', to: '/admin/reports', icon: <BarChart2 className="w-4 h-4" /> },
   { label: 'Import / Export', to: '/admin/import-export', icon: <Upload className="w-4 h-4" /> },
   { label: 'Movements', to: '/admin/movements', icon: <ArrowLeftRight className="w-4 h-4" /> },
-  { label: 'Reconciliation', to: '/admin/reconciliation', icon: <RefreshCw className="w-4 h-4" /> },
+  // { label: 'Reconciliation', to: '/admin/reconciliation', icon: <RefreshCw className="w-4 h-4" /> },
   { label: 'Audit History', to: '/admin/audit-history', icon: <History className="w-4 h-4" /> },
-  { label: 'Settings', to: '/admin/settings', icon: <Settings className="w-4 h-4" /> },
+  // { label: 'Settings', to: '/admin/settings', icon: <Settings className="w-4 h-4" /> },
 ]
 
 function getPageTitle(pathname: string): string {
@@ -76,26 +76,39 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
   const Sidebar = () => (
     <div className="flex flex-col h-full bg-[#102C42] text-white">
       {/* Brand Header */}
+
       <div className="p-5 border-b border-[#1A3D59] flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#0D827D] flex items-center justify-center font-bold text-white shadow-sm">
-            <Package className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Brand Logo */}
+          <div className="w-10 h-10 shrink-0 flex items-center justify-center">
+            <img
+              src="/logo.png"
+              alt="VM Stock Logo"
+              className="w-full h-full object-contain"/>
           </div>
-          <div>
+
+          {/* Brand Name */}
+          <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-base tracking-tight text-white">StockFlow</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#0D827D]/30 text-teal-200 border border-[#0D827D]/50">PRO</span>
+              <span className="font-bold text-base tracking-tight text-white">
+                VM Stock
+              </span>
             </div>
-            <p className="text-[11px] text-slate-300 truncate">Wholesale Pipes & Fittings</p>
+            <p className="text-[11px] text-slate-300 truncate">
+              Vimalkumar Mohanlal
+            </p>
           </div>
         </div>
+
+        {/* Mobile Sidebar Close Button */}
         <button
           className="lg:hidden text-slate-300 hover:text-white"
           onClick={() => setSidebarOpen(false)}
-        >
+          aria-label="Close sidebar">
           <X className="w-5 h-5" />
         </button>
       </div>
+
 
       {/* Nav List */}
       <nav className="flex-1 overflow-y-auto p-3 space-y-1">
@@ -187,20 +200,20 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
                 title="Operational records are not yet synchronized to Supabase."
               >
                 <Database className="w-3 h-3 text-[#D97706]" />
-                Local records
+            
               </span>
             </div>
             <p className="text-xs text-[#72869A]">{todayFormatted}</p>
           </div>
 
           {/* Quick Staff Mode Link for laptops */}
-          <button
+          {/* <button
             onClick={() => navigate('/staff/home')}
             className="hidden md:flex items-center gap-1.5 text-xs font-semibold text-[#102C42] bg-[#F4F7FA] hover:bg-[#DCE5EB]/60 px-3 py-1.5 rounded-xl border border-[#DCE5EB] transition-colors"
           >
             <Smartphone className="w-3.5 h-3.5 text-[#0D827D]" />
             <span>Staff Portal</span>
-          </button>
+          </button> */}
 
           {/* Profile Menu */}
           <div ref={profileRef} className="relative">

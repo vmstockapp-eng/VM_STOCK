@@ -49,7 +49,7 @@ function ProtectedRoute({ children, roles }: { children: React.ReactNode; roles?
           <div className="w-12 h-12 rounded-2xl bg-[#102C42] flex items-center justify-center mx-auto animate-pulse">
             <div className="w-6 h-6 bg-[#0D827D] rounded-lg" />
           </div>
-          <p className="text-xs font-semibold text-[#72869A]">Loading StockFlow Pro...</p>
+          <p className="text-xs font-semibold text-[#72869A]">Loading VM Stock...</p>
         </div>
       </div>
     )

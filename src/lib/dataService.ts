@@ -51,14 +51,19 @@ function setStore<T>(key: string, val: T): void {
  */
 export async function hydrateCatalogCacheFromSupabase(): Promise<void> {
   const supabase = getSupabase()
-  const [categoriesResult, warehousesResult, productsResult, balancesResult, inwardResult, outwardResult, movementsResult] = await Promise.all([
+  // Vehicles and driver profiles MUST be loaded from Supabase too. Previously
+  // this function hydrated inventory but left these two catalogs in browser
+  // localStorage, so a staff member on another account/device saw only 'Other'.
+  const [categoriesResult, warehousesResult, productsResult, balancesResult, inwardResult, outwardResult, movementsResult, vehiclesResult, profilesResult] = await Promise.all([
     supabase.from('categories').select('*').order('sort_order').order('name'),
     supabase.from('warehouses').select('*').order('name'),
     supabase.from('products').select('*, category:categories(*)').order('sku'),
     supabase.from('stock_balances').select('*'),
     supabase.from('inward_stock_entries').select('*, lines:inward_stock_lines(*)').order('created_at', { ascending: false }),
     supabase.from('outward_deliveries').select('*, items:delivery_items(*)').order('created_at', { ascending: false }),
-    supabase.from('stock_movements').select('*').order('created_at', { ascending: false })
+    supabase.from('stock_movements').select('*').order('created_at', { ascending: false }),
+    supabase.from('vehicles').select('*').order('registration_number'),
+    supabase.from('profiles').select('*').order('full_name')
   ])
 
   const failures: string[] = []
@@ -70,6 +75,22 @@ export async function hydrateCatalogCacheFromSupabase(): Promise<void> {
 
   if (productsResult.error) failures.push(`products: ${productsResult.error.message}`)
   else setStore('products', productsResult.data ?? [])
+
+  if (vehiclesResult.error) failures.push(`vehicles: ${vehiclesResult.error.message}`)
+  else setStore('vehicles', (vehiclesResult.data ?? []).map((row: any) => ({
+    ...row,
+    registration_number: String(row.registration_number ?? '').toUpperCase(),
+    is_active: row.is_active !== false
+  })))
+
+  // RLS should expose active driver profiles to authenticated staff (and the
+  // user's own profile). getDrivers() filters this shared cache by role.
+  if (profilesResult.error) failures.push(`driver/staff profiles: ${profilesResult.error.message}`)
+  else setStore('profiles', (profilesResult.data ?? []).map((row: any) => ({
+    ...row,
+    is_active: row.is_active !== false,
+    permissions: row.permissions ?? {}
+  })))
 
   if (balancesResult.error) failures.push(`stock balances: ${balancesResult.error.message}`)
   else setStore('stock_balances', (balancesResult.data ?? []).map(row => ({
@@ -951,59 +972,70 @@ export function getVehicleById(id: string): Vehicle | undefined {
   return list.find(v => v.id === id)
 }
 
-export function saveVehicle(data: Partial<Vehicle>): Vehicle {
+export async function saveVehicle(data: Partial<Vehicle>): Promise<Vehicle> {
+  const supabase = getSupabase()
   const list = getStore<Vehicle[]>('vehicles', EMPTY_VEHICLES)
   const regNumber = (data.registration_number || '').trim().toUpperCase()
+  if (!regNumber) throw new Error('Vehicle registration number is required.')
 
-  // Validate duplicate registration number
-  const existingWithReg = list.find(v => v.registration_number.toUpperCase() === regNumber && v.id !== data.id)
-  if (existingWithReg) {
-    throw new Error(`Vehicle with registration number "${regNumber}" already exists (${existingWithReg.name}).`)
+  const duplicate = list.find(v => v.registration_number.toUpperCase() === regNumber && v.id !== data.id)
+  if (duplicate) throw new Error(`Vehicle with registration number "${regNumber}" already exists (${duplicate.name}).`)
+
+  const payload: Record<string, unknown> = {
+    name: (data.name || 'Commercial Vehicle').trim(),
+    registration_number: regNumber,
+    vehicle_type: (data.vehicle_type || 'Truck').trim(),
+    insurance_policy_no: data.insurance_policy_no || null,
+    insurance_expiry_date: data.insurance_expiry_date || null,
+    puc_certificate_no: data.puc_certificate_no || null,
+    puc_expiry_date: data.puc_expiry_date || null,
+    owner_name: data.owner_name || null,
+    contact_number: data.contact_number || null,
+    notes: data.notes || null,
+    is_active: data.is_active !== undefined ? data.is_active : true,
+    updated_at: new Date().toISOString()
+  }
+  // Only pass an id when editing an actual Supabase UUID. Never create fake
+  // 'veh-...' IDs: outward_deliveries.vehicle_id is a UUID foreign key.
+  if (data.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.id)) {
+    payload.id = data.id
   }
 
-  let savedVehicle: Vehicle
-  if (data.id) {
-    const idx = list.findIndex(v => v.id === data.id)
-    if (idx === -1) throw new Error('Vehicle not found')
-    savedVehicle = {
-      ...list[idx],
-      ...data,
-      registration_number: regNumber,
-      updated_at: new Date().toISOString()
-    }
-    list[idx] = savedVehicle
-  } else {
-    savedVehicle = {
-      id: `veh-${Date.now()}`,
-      name: data.name || 'Commercial Vehicle',
-      registration_number: regNumber,
-      vehicle_type: data.vehicle_type || 'Truck',
-      insurance_policy_no: data.insurance_policy_no || null,
-      insurance_expiry_date: data.insurance_expiry_date || null,
-      puc_certificate_no: data.puc_certificate_no || null,
-      puc_expiry_date: data.puc_expiry_date || null,
-      owner_name: data.owner_name || null,
-      contact_number: data.contact_number || null,
-      notes: data.notes || null,
-      is_active: data.is_active !== undefined ? data.is_active : true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-    list.push(savedVehicle)
-  }
+  const { data: savedRow, error } = await supabase
+    .from('vehicles')
+    .upsert(payload, { onConflict: 'id' })
+    .select('*')
+    .single()
+  if (error) throw new Error(`Unable to save vehicle to Supabase: ${error.message}`)
+  if (!savedRow?.id) throw new Error('Supabase did not return the saved vehicle record.')
 
-  setStore('vehicles', list)
+  const savedVehicle = savedRow as Vehicle
+  const refreshed = getStore<Vehicle[]>('vehicles', EMPTY_VEHICLES).filter(v => v.id !== savedVehicle.id && v.registration_number.toUpperCase() !== regNumber)
+  refreshed.push(savedVehicle)
+  setStore('vehicles', refreshed)
   return savedVehicle
 }
 
-export function toggleVehicleActive(id: string): Vehicle {
+export async function toggleVehicleActive(id: string): Promise<Vehicle> {
   const list = getStore<Vehicle[]>('vehicles', EMPTY_VEHICLES)
-  const idx = list.findIndex(v => v.id === id)
-  if (idx === -1) throw new Error('Vehicle not found')
-  list[idx].is_active = !list[idx].is_active
-  list[idx].updated_at = new Date().toISOString()
-  setStore('vehicles', list)
-  return list[idx]
+  const current = list.find(v => v.id === id)
+  if (!current) throw new Error('Vehicle not found. Refresh the vehicle list and try again.')
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    throw new Error('This vehicle has an invalid local ID. Refresh the vehicle list; do not use unsynced local-only records.')
+  }
+
+  const { data, error } = await getSupabase()
+    .from('vehicles')
+    .update({ is_active: !current.is_active, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select('*')
+    .single()
+  if (error) throw new Error(`Unable to update vehicle in Supabase: ${error.message}`)
+  if (!data) throw new Error('Supabase did not return the updated vehicle record.')
+
+  const updated = data as Vehicle
+  setStore('vehicles', list.map(v => v.id === id ? updated : v))
+  return updated
 }
 
 export function getVehicleDeliveries(registrationNumber: string): OutwardDelivery[] {

@@ -58,14 +58,26 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-brand-bg flex flex-col justify-center items-center p-4">
       <div className="w-full max-w-md">
-        {/* Brand Logo & Title */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-DEFAULT text-white shadow-card mb-3">
-            <Package className="w-8 h-8 text-teal-DEFAULT" />
-          </div>
-          <h1 className="text-2xl font-bold text-navy-DEFAULT tracking-tight">StockFlow Pro</h1>
-          <p className="text-xs text-brand-textSecondary mt-1">Wholesale Pipes & Fittings Inventory Management</p>
+        
+      {/* Brand Logo & Title */}
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-navy-DEFAULT shadow-card mb-3 overflow-hidden">
+          <img
+            src="/logo.png"
+            alt="VM Stock Logo"
+            className="w-full h-full object-contain"
+          />
         </div>
+
+        <h1 className="text-2xl font-bold text-navy-DEFAULT tracking-tight">
+          VM Stock
+        </h1>
+
+        <p className="text-xs text-brand-textSecondary mt-1">
+          Wholesale Pipes &amp; Fittings Inventory Management
+        </p>
+      </div>
+
 
         {/* Login Card */}
         <div className="card shadow-card-hover border-brand-border">
@@ -80,7 +92,7 @@ export default function LoginPage() {
                 : 'bg-amber-50 text-brand-warning border border-amber-200'
             }`}>
               <Database className="w-3 h-3" />
-              {supabaseConfigured ? 'Supabase Authentication' : 'Supabase Not Configured'}
+              {supabaseConfigured ? 'Authentication' : 'Database Not Configured'}
             </span>
           </div>
 
@@ -138,7 +150,7 @@ export default function LoginPage() {
         {/* Security & System Info */}
         <div className="text-center mt-6 text-[11px] text-brand-textSecondary">
           <p>Multi-location stock register for PVC, HDPE, SWR, CPVC & Water Tanks</p>
-          <p className="mt-1 text-navy-100 font-medium">StockFlow Pro © 2026 • Enterprise Grade Security</p>
+          <p className="mt-1 text-navy-100 font-medium">VM Stock © 2026 • Enterprise Grade Security</p>
         </div>
       </div>
     </div>
