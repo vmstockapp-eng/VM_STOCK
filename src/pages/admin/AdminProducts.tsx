@@ -119,17 +119,42 @@ export default function AdminProducts() {
   }, [])
 
   // Filtered List
-  const filteredProducts = useMemo(() => {
-    return productsList.filter(p => {
-      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
-                          p.sku.toLowerCase().includes(search.toLowerCase())
-      const matchCat = categoryFilter === 'all' || p.category_id === categoryFilter
-      const matchStatus = statusFilter === 'all' ||
-                          (statusFilter === 'active' && p.is_active) ||
-                          (statusFilter === 'inactive' && !p.is_active)
-      return matchSearch && matchCat && matchStatus
-    })
-  }, [productsList, search, categoryFilter, statusFilter])
+  
+const filteredProducts = useMemo(() => {
+  const query = search.trim().toLowerCase()
+
+  return productsList.filter((product) => {
+    const category = categories.find(
+      (item) => item.id === product.category_id
+    )
+
+    const searchableText = [
+      product.sku,
+      product.name,
+      product.grade ?? '',
+      product.diameter_mm ?? '',
+      product.pressure_rating_kg ?? '',
+      category?.name ?? '',
+    ]
+      .join(' ')
+      .toLowerCase()
+
+    const matchesSearch =
+      !query || searchableText.includes(query)
+
+    const matchesCategory =
+      categoryFilter === 'all' ||
+      product.category_id === categoryFilter
+
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'active' && product.is_active) ||
+      (statusFilter === 'inactive' && !product.is_active)
+
+    return matchesSearch && matchesCategory && matchesStatus
+  })
+}, [productsList, categories, search, categoryFilter, statusFilter])
+
 
   // Pagination
   const totalPages = Math.ceil(filteredProducts.length / pageSize) || 1
@@ -226,22 +251,44 @@ export default function AdminProducts() {
 
   const handleDelete = async () => {
     if (!productToDelete) return
+
+    const target = productToDelete
     setIsSaving(true)
     setDeleteError(null)
+
     try {
-      await deleteProductRecord(productToDelete.id)
+      // The database RPC permanently deletes an unreferenced product, but
+      // deactivates a product that is referenced by stock/history records.
+      await deleteProductRecord(target.id)
+
+      // Reload the authoritative catalog so the UI can distinguish those outcomes.
+      const latestProducts = await loadProducts()
+      setProductsList(latestProducts)
+      setPage(1)
       setDeleteConfirmOpen(false)
-      const refreshed = await refreshCatalog()
-      toast(
-        refreshed ? 'success' : 'warning',
-        refreshed ? 'Product Deleted' : 'Product Deleted; Refresh Failed',
-        refreshed ? `${productToDelete.sku} removed.` : 'The product was deleted, but the list could not be refreshed. Reload the page.'
-      )
       setProductToDelete(null)
+
+      const remainingProduct = latestProducts.find(product => product.id === target.id)
+
+      if (!remainingProduct) {
+        toast('success', 'Product Deleted', `${target.sku} was permanently removed from the catalog.`)
+      } else if (!remainingProduct.is_active) {
+        toast(
+          'success',
+          'Product Deactivated',
+          `${target.sku} has stock or historical records, so it was marked inactive. Existing inventory history was preserved.`
+        )
+      } else {
+        toast(
+          'warning',
+          'Product Still Exists',
+          `${target.sku} is still in the catalog. Refresh the page and check the database function result.`
+        )
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Database request failed.'
       setDeleteError(message)
-      toast('error', 'Failed to delete product', message)
+      toast('error', 'Product Action Failed', message)
     } finally {
       setIsSaving(false)
     }
@@ -789,7 +836,7 @@ export default function AdminProducts() {
           title="Delete Product SKU?"
           message={deleteError
             ? deleteError
-            : `Are you sure you want to remove "${productToDelete?.name}" (${productToDelete?.sku}) from the catalog?`}
+            : `Remove "${productToDelete?.name}" (${productToDelete?.sku}) from the catalog? If stock or historical records reference this product, it will be deactivated instead of permanently deleted so inventory history is preserved.`}
           danger
           confirmLabel="Delete SKU"
           loading={isSaving}
