@@ -51,11 +51,14 @@ function setStore<T>(key: string, val: T): void {
  */
 export async function hydrateCatalogCacheFromSupabase(): Promise<void> {
   const supabase = getSupabase()
-  const [categoriesResult, warehousesResult, productsResult, balancesResult] = await Promise.all([
+  const [categoriesResult, warehousesResult, productsResult, balancesResult, inwardResult, outwardResult, movementsResult] = await Promise.all([
     supabase.from('categories').select('*').order('sort_order').order('name'),
     supabase.from('warehouses').select('*').order('name'),
     supabase.from('products').select('*, category:categories(*)').order('sku'),
-    supabase.from('stock_balances').select('*')
+    supabase.from('stock_balances').select('*'),
+    supabase.from('inward_stock_entries').select('*, lines:inward_stock_lines(*)').order('created_at', { ascending: false }),
+    supabase.from('outward_deliveries').select('*, items:delivery_items(*)').order('created_at', { ascending: false }),
+    supabase.from('stock_movements').select('*').order('created_at', { ascending: false })
   ])
 
   const failures: string[] = []
@@ -72,6 +75,34 @@ export async function hydrateCatalogCacheFromSupabase(): Promise<void> {
   else setStore('stock_balances', (balancesResult.data ?? []).map(row => ({
     ...row,
     quantity: Number(row.quantity) || 0
+  })))
+
+  // Populate legacy synchronous screens from the shared database. These records
+  // used to exist only in each browser's localStorage.
+  if (inwardResult.error) failures.push(`inward entries: ${inwardResult.error.message}`)
+  else setStore('inward_entries', (inwardResult.data ?? []).map((row: any) => ({
+    ...row,
+    entry_date: row.entry_date,
+    status: row.status === 'saved' ? 'saved' : 'draft',
+    lines: (row.lines ?? []).map((line: any) => ({ ...line, quantity: Number(line.quantity) || 0 }))
+  })))
+
+  if (outwardResult.error) failures.push(`outward deliveries: ${outwardResult.error.message}`)
+  else setStore('deliveries', (outwardResult.data ?? []).map((row: any) => ({
+    ...row,
+    date: row.delivery_date,
+    dispatch_timestamp: row.dispatch_timestamp ?? row.created_at,
+    vehicle_out_km: Number(row.vehicle_out_km) || 0,
+    vehicle_in_km: row.vehicle_in_km == null ? null : Number(row.vehicle_in_km),
+    distance_travelled: row.distance_travelled == null ? null : Number(row.distance_travelled),
+    items: (row.items ?? []).map((item: any) => ({ ...item, delivery_id: row.id, quantity: Number(item.quantity) || 0 }))
+  })))
+
+  if (movementsResult.error) failures.push(`stock movements: ${movementsResult.error.message}`)
+  else setStore('movements', (movementsResult.data ?? []).map((row: any) => ({
+    ...row,
+    quantity: Number(row.quantity) || 0,
+    creator_name: row.creator_name ?? row.created_by
   })))
 
   if (failures.length) {

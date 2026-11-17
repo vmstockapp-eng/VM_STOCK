@@ -11,10 +11,11 @@ import { useToast } from '../../store/ToastContext'
 import {
   getCategories, getProducts, getWarehouses,
   saveInwardEntry, getProductStockBalance,
-  getInwardEntryById, getInwardDrafts, deleteInwardDraft
+  getInwardEntryById, getInwardDrafts, deleteInwardDraft, hydrateCatalogCacheFromSupabase
 } from '../../lib/dataService'
 import type { Category, Product, InwardStockLine, InwardStockEntry } from '../../types'
 import { generateRef, formatNumber, getUnitLabel } from '../../lib/utils'
+import { persistInwardEntry } from '../../lib/staffTransactionService'
 
 export default function StaffInwardEntry() {
   const { profile } = useAuth()
@@ -189,7 +190,7 @@ export default function StaffInwardEntry() {
 
     setIsSubmitting(true)
     try {
-      const saved = saveInwardEntry({
+      const entryPayload: Omit<InwardStockEntry, 'id' | 'created_at'> = {
         reference_no: referenceNo,
         warehouse_id: warehouseId,
         entry_date: entryDate,
@@ -200,7 +201,12 @@ export default function StaffInwardEntry() {
         lines,
         created_by: profile.id,
         creator_name: profile.full_name
-      }, profile)
+      }
+
+      // Do not show success until Supabase confirms the transaction.
+      await persistInwardEntry(entryPayload, profile)
+      await hydrateCatalogCacheFromSupabase()
+      const saved = getInwardEntryById(entryPayload.reference_no) ?? { ...entryPayload, id: entryPayload.reference_no, created_at: new Date().toISOString() }
 
       setDraftsVersion(v => v + 1)
 

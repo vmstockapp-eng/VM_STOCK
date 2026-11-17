@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   FileText, Calendar, Warehouse as WarehouseIcon, ChevronRight,
@@ -33,9 +33,15 @@ export default function StaffMyEntries() {
   const [staffReturnNotes, setStaffReturnNotes] = useState<string>('')
   const [isSavingReturn, setIsSavingReturn] = useState(false)
 
+  useEffect(() => {
+    const refresh = () => { setDeliveriesVer(v => v + 1); setDraftsVer(v => v + 1) }
+    window.addEventListener('stockflow:data-updated', refresh)
+    return () => window.removeEventListener('stockflow:data-updated', refresh)
+  }, [])
+
   const reports = useMemo(() => {
     return getDailyReports(profile?.warehouse_id || undefined, profile?.id)
-  }, [profile])
+  }, [profile, draftsVer])
 
   const filteredReports = useMemo(() => {
     if (statusFilter === 'all') return reports
@@ -55,7 +61,7 @@ export default function StaffMyEntries() {
   const inwardEntries = useMemo(() => {
     const list = getInwardEntries(profile?.warehouse_id || undefined)
     return list.filter(e => e.status === 'saved')
-  }, [profile])
+  }, [profile, draftsVer])
 
   const staffDrafts = useMemo(() => {
     return getAllStaffDrafts(profile?.warehouse_id || undefined, profile?.id)

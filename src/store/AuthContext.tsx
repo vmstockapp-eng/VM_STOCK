@@ -55,6 +55,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await fetchProfile(user.id)
   }, [user, fetchProfile])
 
+  // Keep the local compatibility cache refreshed when another signed-in user
+  // changes shared catalog or operational rows. Existing screens read this cache.
+  useEffect(() => {
+    if (!user || !profile || !isSupabaseConfigured()) return
+    let refreshInProgress = false
+    const channel = getSupabase().channel(`stockflow-shared-${user.id}`)
+    const tables = [
+      'categories', 'warehouses', 'products', 'stock_balances', 'stock_movements',
+      'inward_stock_entries', 'inward_stock_lines', 'outward_deliveries', 'delivery_items'
+    ]
+    for (const table of tables) {
+      channel.on('postgres_changes', { event: '*', schema: 'public', table }, () => {
+        if (refreshInProgress) return
+        refreshInProgress = true
+        void hydrateCatalogCacheFromSupabase()
+          .then(() => window.dispatchEvent(new Event('stockflow:data-updated')))
+          .catch(error => console.error('[StockFlow] Realtime refresh failed:', error))
+          .finally(() => { refreshInProgress = false })
+      })
+    }
+    channel.subscribe(status => {
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        console.warn('[StockFlow] Realtime subscription status:', status)
+      }
+    })
+    return () => { void getSupabase().removeChannel(channel) }
+  }, [user, profile])
+
   useEffect(() => {
     if (!isSupabaseConfigured()) {
       setAuthError('Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.')

@@ -10,10 +10,11 @@ import { useToast } from '../../store/ToastContext'
 import {
   getWarehouses, getProducts, getVehicles, getDrivers,
   saveOutwardDelivery, getProductStockBalance,
-  getDeliveryById, getDeliveryDrafts, deleteDeliveryDraft
+  getDeliveryById, getDeliveryDrafts, deleteDeliveryDraft, hydrateCatalogCacheFromSupabase
 } from '../../lib/dataService'
 import type { DeliveryItem, OutwardDelivery } from '../../types'
 import { generateRef, formatNumber, getUnitLabel } from '../../lib/utils'
+import { persistOutwardDelivery } from '../../lib/staffTransactionService'
 
 export default function StaffOutwardDelivery() {
   const { profile } = useAuth()
@@ -312,7 +313,7 @@ export default function StaffOutwardDelivery() {
 
     setIsSubmitting(true)
     try {
-      const newDelivery = saveOutwardDelivery({
+      const deliveryPayload: Omit<OutwardDelivery, 'id' | 'created_at'> = {
         delivery_ref: deliveryRef,
         warehouse_id: warehouseId,
         date: entryDate,
@@ -344,7 +345,12 @@ export default function StaffOutwardDelivery() {
 
         created_by: profile.id,
         creator_name: profile.full_name
-      }, profile)
+      }
+
+      // The database transaction is authoritative; only update the local UI after it succeeds.
+      await persistOutwardDelivery(deliveryPayload, profile)
+      await hydrateCatalogCacheFromSupabase()
+      const newDelivery = getDeliveryById(deliveryPayload.delivery_ref) ?? { ...deliveryPayload, id: deliveryPayload.delivery_ref, created_at: new Date().toISOString() }
 
       setDraftsVersion(v => v + 1)
 

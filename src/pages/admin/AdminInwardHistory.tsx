@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   ArrowDownLeft, Search, Warehouse, Eye,
   CheckCircle2, Clock, Package, X
@@ -16,6 +16,12 @@ export default function AdminInwardHistory() {
   const [search, setSearch] = useState('')
   const [warehouseFilter, setWarehouseFilter] = useState('all')
   const [selectedEntry, setSelectedEntry] = useState<InwardStockEntry | null>(null)
+
+  useEffect(() => {
+    const refresh = () => setInwardList(getInwardEntries())
+    window.addEventListener('stockflow:data-updated', refresh)
+    return () => window.removeEventListener('stockflow:data-updated', refresh)
+  }, [])
 
   const filteredEntries = useMemo(() => {
     let list = inwardList

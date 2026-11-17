@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   Truck, Search, Filter, Calendar, MapPin, Gauge, User,
   CheckCircle2, Clock, AlertCircle, Eye, ArrowUpRight,
@@ -27,6 +27,12 @@ export default function AdminDeliveries() {
 
   // Selected delivery for Detail Modal
   const [selectedDelivery, setSelectedDelivery] = useState<OutwardDelivery | null>(null)
+
+  useEffect(() => {
+    const refresh = () => setDeliveries(getDeliveries())
+    window.addEventListener('stockflow:data-updated', refresh)
+    return () => window.removeEventListener('stockflow:data-updated', refresh)
+  }, [])
 
   const reloadDeliveries = () => {
     setDeliveries(getDeliveries())
