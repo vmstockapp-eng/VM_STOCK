@@ -5,6 +5,7 @@ import type {
   Vehicle, OutwardDelivery, DeliveryItem, InwardStockEntry, InwardStockLine, DeliveryStatus
 } from '../types'
 import { generateRef, calcClosingStock, getUnitLabel } from './utils'
+import { getSupabase } from './supabase'
 export { isSupabaseConfigured } from './supabase'
 
 const EMPTY_WAREHOUSES: Warehouse[] = []
@@ -40,6 +41,41 @@ function setStore<T>(key: string, val: T): void {
   } catch (error) {
     const detail = error instanceof Error ? error.message : 'Unknown browser storage error.'
     throw new Error(`Unable to save local records for "${key}": ${detail}`)
+  }
+}
+
+/**
+ * Refresh the shared catalog cache used by legacy synchronous staff screens.
+ * Admin catalog screens write to Supabase, so reading only localStorage caused
+ * staff accounts/devices to see empty categories, warehouses, products and stock.
+ */
+export async function hydrateCatalogCacheFromSupabase(): Promise<void> {
+  const supabase = getSupabase()
+  const [categoriesResult, warehousesResult, productsResult, balancesResult] = await Promise.all([
+    supabase.from('categories').select('*').order('sort_order').order('name'),
+    supabase.from('warehouses').select('*').order('name'),
+    supabase.from('products').select('*, category:categories(*)').order('sku'),
+    supabase.from('stock_balances').select('*')
+  ])
+
+  const failures: string[] = []
+  if (categoriesResult.error) failures.push(`categories: ${categoriesResult.error.message}`)
+  else setStore('categories', categoriesResult.data ?? [])
+
+  if (warehousesResult.error) failures.push(`warehouses: ${warehousesResult.error.message}`)
+  else setStore('warehouses', warehousesResult.data ?? [])
+
+  if (productsResult.error) failures.push(`products: ${productsResult.error.message}`)
+  else setStore('products', productsResult.data ?? [])
+
+  if (balancesResult.error) failures.push(`stock balances: ${balancesResult.error.message}`)
+  else setStore('stock_balances', (balancesResult.data ?? []).map(row => ({
+    ...row,
+    quantity: Number(row.quantity) || 0
+  })))
+
+  if (failures.length) {
+    throw new Error(`Unable to refresh shared inventory data from Supabase — ${failures.join('; ')}`)
   }
 }
 

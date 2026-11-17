@@ -28,7 +28,7 @@ export default function StaffOutwardDelivery() {
   const registeredVehicles = useMemo(() => getVehicles(true), [])
   const registeredDrivers = useMemo(() => getDrivers(true), [])
 
-  const defaultWhId = profile?.warehouse_id || warehouses[1]?.id || 'w-2'
+  const defaultWhId = profile?.warehouse_id || ''
   const [warehouseId, setWarehouseId] = useState<string>(defaultWhId)
 
   // Delivery Document Details

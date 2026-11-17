@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { getSupabase, isSupabaseConfigured } from '../lib/supabase'
+import { hydrateCatalogCacheFromSupabase } from '../lib/dataService'
 import type { Profile } from '../types'
 
 interface AuthContextValue {
@@ -32,6 +33,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!data) throw new Error('No profile is configured for this authentication user.')
 
     const profileData = data as Profile
+    // Refresh shared catalog data before rendering staff pages that use the
+    // synchronous legacy repository helpers. Keep login available if a table
+    // is misconfigured, but make the actual database failure visible in Console.
+    try {
+      await hydrateCatalogCacheFromSupabase()
+    } catch (catalogError) {
+      console.error('[StockFlow] Failed to load shared inventory data:', catalogError)
+    }
     setProfile(profileData)
     setAuthError(null)
     return profileData
